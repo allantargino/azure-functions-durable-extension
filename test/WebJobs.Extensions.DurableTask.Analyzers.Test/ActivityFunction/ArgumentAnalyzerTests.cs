@@ -189,7 +189,7 @@ namespace VSSample
         public static string TestIListInputDirectInput([ActivityTrigger] IList<string> namedType)
         {
             return $""Hello {name}!"";
-        
+        }
 
         [FunctionName(""Test_IListInput_OnContext"")]
         public static string TestIListInputContext([ActivityTrigger] IDurableActivityContext context)
