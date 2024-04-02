@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.CodeAnalysis;
 
@@ -8,7 +11,7 @@ namespace Worker.Extensions.DurableTask.Analyzers.Helpers
     /// Provides a set of well-known types that are used by the analyzers.
     /// Inspired by KnownTypeSymbols class in
     /// <see href="https://github.com/dotnet/runtime/blob/2a846acb1a92e811427babe3ff3f047f98c5df02/src/libraries/System.Text.Json/gen/Helpers/KnownTypeSymbols.cs">System.Text.Json.SourceGeneration</see> source code.
-    /// Lazy initialization is used to avoid the the initialization of all types during class construction, since not all symbols are used in all analyzers.
+    /// Lazy initialization is used to avoid the the initialization of all types during class construction, since not all symbols are used by all analyzers.
     /// </summary>
     internal sealed class KnownTypeSymbols
     {

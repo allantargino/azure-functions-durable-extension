@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,7 +24,7 @@ namespace Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration
         protected override void RegisterAdditionalCompilationStartAction(CompilationStartAnalysisContext context, ConcurrentDictionary<ISymbol, MethodDeclarationSyntax> methodsReachableByOrchestrators)
         {
             INamedTypeSymbol systemDateTimeSymbol = context.Compilation.GetSpecialType(SpecialType.System_DateTime);
-
+            
             ConcurrentBag<(ISymbol method, IPropertyReferenceOperation operation)> dateTimeUsage = new();
 
             // search for usages of DateTime.Now, DateTime.UtcNow, DateTime.Today and store them

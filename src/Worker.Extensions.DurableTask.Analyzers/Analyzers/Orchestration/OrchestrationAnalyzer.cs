@@ -1,4 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,16 +16,6 @@ namespace Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration
 {
     public abstract class OrchestrationAnalyzer : DiagnosticAnalyzer
     {
-        /// <summary>
-        /// Register additional actions to be executed after the compilation has started.
-        /// It is expected from a concrete implementation of <see cref="OrchestrationAnalyzer"/> to register a
-        /// <see cref="CompilationStartAnalysisContext.RegisterCompilationEndAction"/>
-        /// and then compare the found violations happened in any of the methods in <paramref name="methodsReachableByOrchestrations"/>.
-        /// </summary>
-        /// <param name="context">Context originally provided by <see cref="AnalysisContext.RegisterCompilationAction"/></param>
-        /// <param name="methodsReachableByOrchestrations">Collection of Orchestration methods or methods that are invoked by them</param>
-        protected abstract void RegisterAdditionalCompilationStartAction(CompilationStartAnalysisContext context, ConcurrentDictionary<ISymbol, MethodDeclarationSyntax> methodsReachableByOrchestrations);
-
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -36,7 +29,7 @@ namespace Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration
                 {
                     return;
                 }
-
+                
                 ConcurrentDictionary<ISymbol, MethodDeclarationSyntax> methodsReachableByOrchestrations = new(SymbolEqualityComparer.Default);
 
                 context.RegisterSyntaxNodeAction(ctx =>
@@ -50,12 +43,12 @@ namespace Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration
                         return;
                     }
 
-                    var methodNode = (MethodDeclarationSyntax)ctx.Node;
+                    var methodSyntax = (MethodDeclarationSyntax)ctx.Node;
 
-                    bool added = methodsReachableByOrchestrations.TryAdd(methodSymbol!, methodNode);
+                    bool added = methodsReachableByOrchestrations.TryAdd(methodSymbol!, methodSyntax);
                     Debug.Assert(added, "an orchestration method declaration must not be visited twice");
 
-                    this.FindAndAddInvokedMethods(ctx.SemanticModel, methodNode, methodsReachableByOrchestrations);
+                    this.FindAndAddInvokedMethods(ctx.SemanticModel, methodSyntax, methodsReachableByOrchestrations);
                 }, SyntaxKind.MethodDeclaration);
 
                 // allows concrete implementations to register specific actions/analysis and then compare against methodsReachableByOrchestrations
@@ -93,5 +86,15 @@ namespace Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration
                 }
             }
         }
+
+        /// <summary>
+        /// Register additional actions to be executed after the compilation has started.
+        /// It is expected from a concrete implementation of <see cref="OrchestrationAnalyzer"/> to register a
+        /// <see cref="CompilationStartAnalysisContext.RegisterCompilationEndAction"/>
+        /// and then compare that any discovered violations happened in any of the methods in <paramref name="methodsReachableByOrchestrations"/>.
+        /// </summary>
+        /// <param name="context">Context originally provided by <see cref="AnalysisContext.RegisterCompilationAction"/></param>
+        /// <param name="methodsReachableByOrchestrations">Collection of Orchestration methods or methods that are invoked by them</param>
+        protected abstract void RegisterAdditionalCompilationStartAction(CompilationStartAnalysisContext context, ConcurrentDictionary<ISymbol, MethodDeclarationSyntax> methodsReachableByOrchestrations);
     }
 }

@@ -1,4 +1,7 @@
-﻿using Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration;
 using VerifyCS = Worker.Extensions.DurableTask.Analyzers.Tests.CSharpAnalyzerVerifier<Worker.Extensions.DurableTask.Analyzers.Analyzers.Orchestration.DateTimeOrchestrationAnalyzer>;
 
 namespace Worker.Extensions.DurableTask.Analyzers.Test.Analyzers.Orchestration
@@ -12,6 +15,12 @@ namespace Worker.Extensions.DurableTask.Analyzers.Test.Analyzers.Orchestration
 
             await VerifyCS.VerifyAnalyzerAsync(code);
         }
+
+        // TODO: Test for DateTime.Now
+        // TODO: Test for DateTime.UtcNow
+        // TODO: Test for DateTime.Today
+        // TODO: Test for recursion
+        // TODO: Test for wrong syntax
 
         [Fact]
         public async Task FunctionsCalledByOrchestratorHaveDiag()
