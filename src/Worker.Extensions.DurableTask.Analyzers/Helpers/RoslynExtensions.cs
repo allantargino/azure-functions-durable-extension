@@ -1,0 +1,31 @@
+﻿using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis;
+using System.Linq;
+
+namespace Worker.Extensions.DurableTask.Analyzers.Helpers
+{
+    internal static class RoslynExtensions
+    {
+        public static bool ContainsAttributeInAnyMethodArguments(this ISymbol? symbol, INamedTypeSymbol attributeSymbol)
+        {
+            if (symbol is not IMethodSymbol methodSymbol)
+            {
+                return false;
+            }
+
+            return methodSymbol.Parameters
+                .SelectMany(p => p.GetAttributes())
+                .Any(a => attributeSymbol.Equals(a.AttributeClass, SymbolEqualityComparer.Default));
+        }
+
+        public static void ReportDiagnostic(this CompilationAnalysisContext ctx, DiagnosticDescriptor descriptor, IOperation operation, params string[] messageArgs)
+        {
+            ctx.ReportDiagnostic(BuildDiagnostic(descriptor, operation.Syntax, messageArgs));
+        }
+
+        public static Diagnostic BuildDiagnostic(DiagnosticDescriptor descriptor, SyntaxNode syntaxNode, params string[] messageArgs)
+        {
+            return Diagnostic.Create(descriptor, syntaxNode.GetLocation(), messageArgs);
+        }
+    }
+}
