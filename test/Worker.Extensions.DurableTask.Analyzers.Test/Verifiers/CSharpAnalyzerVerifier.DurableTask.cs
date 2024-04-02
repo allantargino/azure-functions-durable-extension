@@ -10,7 +10,7 @@ namespace Worker.Extensions.DurableTask.Analyzers.Tests
     public static partial class CSharpAnalyzerVerifier<TAnalyzer>
         where TAnalyzer : DiagnosticAnalyzer, new()
     {
-        public static async Task VerifyDFAnalyzerAsync(string source, params DiagnosticResult[] expected)
+        public static async Task VerifyDurableTaskAnalyzerAsync(string source, params DiagnosticResult[] expected)
         {
             var test = new Test()
             {

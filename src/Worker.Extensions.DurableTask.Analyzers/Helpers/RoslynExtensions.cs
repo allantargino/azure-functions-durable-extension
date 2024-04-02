@@ -9,6 +9,17 @@ namespace Worker.Extensions.DurableTask.Analyzers.Helpers
 {
     internal static class RoslynExtensions
     {
+        public static bool ContainsAttribute(this ISymbol? symbol, INamedTypeSymbol attributeSymbol)
+        {
+            if (symbol == null)
+            {
+                return false;
+            }
+
+            return symbol.GetAttributes()
+                .Any(a => attributeSymbol.Equals(a.AttributeClass, SymbolEqualityComparer.Default));
+        }
+
         public static bool ContainsAttributeInAnyMethodArguments(this ISymbol? symbol, INamedTypeSymbol attributeSymbol)
         {
             if (symbol is not IMethodSymbol methodSymbol)
